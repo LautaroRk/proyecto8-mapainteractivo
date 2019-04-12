@@ -5,7 +5,9 @@ direccionesModulo = (function () {
     // Calcula las rutas cuando se cambian los lugares de desde, hasta o algun punto intermedio
   function calcularRutasConClic () {
     document.getElementById('comoIr').addEventListener('change', function () {
-      direccionesModulo.calcularYMostrarRutas()
+      if($('#desde').val() != '' && $('#hasta').val() != '') {
+        direccionesModulo.calcularYMostrarRutas()
+      }
     })
 
     document.getElementById('calcularMuchos').addEventListener('click', function () {
@@ -15,7 +17,7 @@ direccionesModulo = (function () {
     var listasLugares = document.getElementsByClassName('lugares')
     for (var j = 0; j < listasLugares.length; j++) {
       listasLugares[j].addEventListener('change', function () {
-        if (document.getElementById('desde').value != '' && document.getElementById('desde').value != '') {
+        if($('#desde').val() != '' && $('#hasta').val() != '') {
           direccionesModulo.calcularYMostrarRutas()
         }
       })
@@ -54,7 +56,9 @@ direccionesModulo = (function () {
     that = this
     var ubicacionTexto = ubicacion.lat() + ',' + ubicacion.lng()
     agregarDireccionEnLista(direccion, ubicacionTexto)
-    mapa.setCenter(ubicacion)
+    mapa.panTo(ubicacion)
+
+    marcadorModulo.crearMarcadorLugarIntermedio(ubicacion);
   }
 
     // Inicializo las variables que muestra el panel y el que calcula las rutas//
@@ -96,43 +100,37 @@ direccionesModulo = (function () {
         /* Completar la función calcularYMostrarRutas , que dependiendo de la forma en que el
          usuario quiere ir de un camino al otro, calcula la ruta entre esas dos posiciones
          y luego muestra la ruta. */
-
-    let puntosIntermedios = [];
-    let intermediosCheckbox = document.getElementById('puntosIntermedios');
-
-    // intermediosCheckbox.options.forEach(option => {
-    //   if (option.selected) {
-    //     puntosIntermedios.push({
-    //       location: option.val,
-    //       stopover: true
-    //     })
-    //   }
-    // })
-    // console.log(puntosIntermedios);
-
-    for(var i = 0; i < intermediosCheckbox.length; i++) {
-      if(intermediosCheckbox[i].selected){
-        puntosIntermedios.push({
-          location: intermediosCheckbox[i].value,
-          stopover: true
-        })
+    if($('#desde').val() != '' && $('#hasta').val() != '') {
+      let puntosIntermedios = [];
+      let intermediosCheckbox = document.getElementById('puntosIntermedios');
+  
+      for(var i = 0; i < intermediosCheckbox.length; i++) {
+        if(intermediosCheckbox[i].selected){
+          puntosIntermedios.push({
+            location: intermediosCheckbox[i].value,
+            stopover: true
+          })
+        }
       }
-      // console.log(intermediosCheckbox.options[i])
+  
+      servicioDirecciones.route({
+        origin: $('#desde').val(),
+        destination: $('#hasta').val(),
+        travelMode: getTravelMode(),
+        waypoints: puntosIntermedios,
+        optimizeWaypoints: true
+      }, function(results, status){
+        if(status == 'OK') {
+          mostradorDirecciones.setDirections(results);
+        } else if (getTravelMode() == 'TRANSIT' && puntosIntermedios.length) {
+          alert('No es posible calcular paradas intermedias en transporte público.');
+        } else {
+          alert(status);
+        }
+      })
+    } else {
+      alert('Debes indicar un origen y un destino.')
     }
-
-    servicioDirecciones.route({
-      origin: $('#desde').val(),
-      destination: $('#hasta').val(),
-      travelMode: getTravelMode(),
-      waypoints: puntosIntermedios,
-      optimizeWaypoints: true
-    }, function(results, status){
-      if(status == 'OK') {
-        mostradorDirecciones.setDirections(results);
-      } else {
-        alert(status);
-      }
-    })
   }
 
   function getTravelMode() {

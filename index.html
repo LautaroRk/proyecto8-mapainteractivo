@@ -28,6 +28,7 @@
                     <input type="textbox" id="hasta" placeholder="Ingresa una dirección &#9166">
                 </div>
             </div>
+            <p class='aclaracion hide-xs'>○ Click derecho sobre un marcador para eliminarlo</p>
         </div>
         <div class="input-choose">
             <div class="medios"> <span class="input-label">Como:</span>
@@ -42,20 +43,20 @@
                     <span class="input-label">Agregar:</span>
                     <input type="textbox" id="agregar" placeholder="Ingresa una dirección &#9166">
                 </div>
-                <label id="labelIntermedios">Lugares Intermedios
-                    <br><i>(Hacé Ctrl-Click para seleccionar varios)</i>
-                </label>
-                <div class="intermedios">
-                    <div class="arrows">
-                        <div class="up">
-                            <input type="button" value="Up" class="btn btn-default"> 
+                <div id="intermedios-container">
+                    <label id="labelIntermedios">Lugares Intermedios</label>
+                    <div class="intermedios">
+                        <div class="arrows">
+                            <div class="up">
+                                <input type="button" value="Up" class="btn btn-default"> 
+                            </div>
+                            <div class="down">
+                                <input type="button" value="down" class="btn btn-default">
+                            </div>
                         </div>
-                        <div class="down">
-                            <input type="button" value="down" class="btn btn-default">
-                        </div>
+                        <select multiple id="puntosIntermedios" class="lugares"></select>
                     </div>
-                    <select multiple id="puntosIntermedios" class="lugares">
-                    </select>
+                    <p class="aclaracion"><span>• Ctrl + Click</span> para seleccionar varios</p>
                 </div>
                 <div class="medios"> <span class="input-label">Lugares:</span>
                     <select id="tipoDeLugar">
