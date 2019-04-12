@@ -19,22 +19,14 @@ marcadorModulo = (function () {
       animation: google.maps.Animation.DROP,
       title: $('#direccion').val()
     });
+    google.maps.event.addListener(miMarcador, 'rightclick', function () {
+      this.setMap(null)
+    });
 
     let esPrimerMarcador = !misMarcadores.length;
     let noEstaRepetido = esPrimerMarcador ? true : misMarcadores.every(marcador => !this.sonIguales(marcador, miMarcador));
     if(noEstaRepetido) misMarcadores.push(miMarcador);
     
-    google.maps.event.addListener(miMarcador, 'rightclick', function () {
-      var indice
-      for (var i = 0; i < misMarcadores.length; i++) {
-        if (misMarcadores[i] == miMarcador) {
-          misMarcadores[i].setMap(null)
-          indice = i
-          misMarcadores.splice(indice, 1)
-        }
-      }
-    });
-
     console.log(misMarcadores)
   }
 
@@ -57,6 +49,10 @@ marcadorModulo = (function () {
       title: $('#agregar').val(),
       visible: true
     })
+    google.maps.event.addListener(marcador, 'rightclick', function () {
+      this.setMap(null);
+    });
+
     $('#agregar').val('')
   }
 

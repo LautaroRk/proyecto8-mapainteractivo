@@ -51,7 +51,7 @@ function inicializarMapa () {
     Tendrás que asignarle un valor de zoom y
     un centro igual a la variable posicionCentral. */
 
-  if(navigator.platform == 'MacIntel') $('#intermedios-container .aclaracion span').text('• Cmd⌘ + Click') 
+  if(navigator.platform == 'MacIntel') $('#intermedios-container .aclaracion span').text('Cmd⌘ + Click') 
 
   mapa = new google.maps.Map(document.getElementById('map'),{
     center: posicionCentral,
