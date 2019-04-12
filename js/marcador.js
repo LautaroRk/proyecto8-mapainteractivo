@@ -4,15 +4,10 @@ marcadorModulo = (function () {
   var marcadoresRuta = [] // Los marcadores de la ruta
   var limites // Límites del mapa
   var infoVentana // La ventana con información
-  const misMarcadores = []
+  var misMarcadores = []
 
   // Crea un marcador y lo muestra en el mapa
   function mostrarMiMarcador (ubicacion) {
-    /* Completar la función mostrarMiMarcador() para crear un marcador
-    en la posición pasada por parámetro y mostrarlo en el mapa.
-    Este marcador debe tener un título, una animación.
-    El marcador que vas a crear debe asignarse a la variable miMarcador */
-
     miMarcador = new google.maps.Marker({
       map: mapa,
       position: ubicacion,
@@ -50,7 +45,16 @@ marcadorModulo = (function () {
       visible: true
     })
     google.maps.event.addListener(marcador, 'rightclick', function () {
+      //Se elimina el marcador del mapa
       this.setMap(null);
+
+      //Se elimina el lugar de la lista de puntos intermedios
+      var lugaresIntermedios = document.getElementById('puntosIntermedios')
+      for (i = 0; i < lugaresIntermedios.length; ++i) {
+        if (lugaresIntermedios.options[i].value == this.getPosition().toString().replace(/[( )]/g, '')) {
+          lugaresIntermedios.options[i] = null;
+        }
+      }
     });
 
     $('#agregar').val('')
