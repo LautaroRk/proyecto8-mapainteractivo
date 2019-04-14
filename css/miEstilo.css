@@ -384,4 +384,10 @@ label {
     .input-choose {
         overflow-y: scroll;
     }
+    #calcularMuchos {
+        margin-bottom: 10px;
+    }
+    .select-circle {
+        padding-bottom: 10px;
+    }
 }
