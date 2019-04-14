@@ -347,12 +347,12 @@ label {
 }
 
 #expand-panel {
-    height:30px; 
-    width:30px; 
+    height: 30px; 
+    width: 30px; 
     margin: -30px -15px; 
-    position:relative;
-    top:50%; 
-    left:50%;
+    position: relative;
+    top: 10px; 
+    left: 50%;
     text-align: center;
     font-size: 12px;
     font-weight: 600;
