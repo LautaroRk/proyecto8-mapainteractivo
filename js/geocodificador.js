@@ -1,17 +1,13 @@
 geocodificadorModulo = (function () {
-  var geocodificador // Geocodificador que dada una dirección devuelve una coordenada
-  
-    // Permite obtener las coordenadas y las usa con la función llamada por parámtero
-  function usaDireccion (direccion, callback) {
-        /* Completar la función usaDireccion(dirección,callback)
-     para que se obtengan las coordenadas a partir de la dirección pasada por parámetro
-     y que llame a la función pasada por parámetro con los siguientes parámetros
-     dirección: la dirección pasada por parámetro
-     coordenada: la ubicación de tipo google.maps.LatLng */
+  let geocodificador // Geocodificador que dada una dirección devuelve una coordenada
 
-     geocodificador.geocode( {'address': direccion}, function(results, status) {
+  // Obtiene un objeto props, le agrega la ubicacion (LatLng) y llama al callback con las props completas
+  // El objeto props debe incluir una direccion
+  function usaDireccionProps (props, callback) {
+    geocodificador.geocode( {'address': props.direccion}, function(results, status) {
       if (status == 'OK') {
-        callback(direccion, results[0].geometry.location);
+        props.ubicacion = results[0].geometry.location;
+        callback(props);
       } else {
         alert('Geocode was not successful for the following reason: ' + status);
       }
@@ -47,22 +43,26 @@ geocodificadorModulo = (function () {
     // La variable dirección es igual al texto ingresado por el usuario
     // Llama a la función usaDirecciin para agregarla a los listados y mostrarlo en el mapa
   function inicializar () {
-    var that = this
+    let that = this
     geocodificador = new google.maps.Geocoder()
 
         // cuando se presiona la tecla enter en el campo direccion, se agrega la dirección y se muestra en el mapa
     document.querySelector('#direccion').addEventListener('keypress', function (e) {
-      var key = e.which || e.keyCode
+      let key = e.which || e.keyCode
       if (key === 13) { // 13 is enter
-                // code for enter
-        var direccion = document.getElementById('direccion').value
-        that.usaDireccion(direccion, direccionesModulo.agregarDireccionYMostrarEnMapa)
+        let props = {
+          direccion: document.getElementById('direccion').value,
+          titulo: document.getElementById('direccion').value
+        }
+        that.usaDireccionProps(props, direccionesModulo.agregarDireccionYMostrarEnMapa)
+        direccionesModulo.ocultarRutas()
       }
     })
   }
 
   return {
     usaDireccion,
+    usaDireccionProps,
     inicializar,
     obtenerDireccionString
   }

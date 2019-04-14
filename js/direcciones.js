@@ -1,64 +1,80 @@
 direccionesModulo = (function () {
-  var servicioDirecciones // Servicio que calcula las direcciones
-  var mostradorDirecciones // Servicio muestra las direcciones
+  let servicioDirecciones // Servicio que calcula las direcciones
+  let mostradorDirecciones // Servicio muestra las direcciones
+  let mostrandoRuta = false // Indica si hay rutas dibujadas en el mapa
 
     // Calcula las rutas cuando se cambian los lugares de desde, hasta o algun punto intermedio
   function calcularRutasConClic () {
-    document.getElementById('comoIr').addEventListener('change', function () {
+    $('#comoIr').change(function () {
       if($('#desde').val() != '' && $('#hasta').val() != '') {
         direccionesModulo.calcularYMostrarRutas()
       }
     })
 
-    document.getElementById('calcularMuchos').addEventListener('click', function () {
+    $('#calcularMuchos').click(function () {
       direccionesModulo.calcularYMostrarRutas()
     })
 
-    var listasLugares = document.getElementsByClassName('lugares')
-    for (var j = 0; j < listasLugares.length; j++) {
+    let listasLugares = $('.lugares')
+    for (let j = 0; j < listasLugares.length; j++) {
       listasLugares[j].addEventListener('change', function () {
-        if($('#desde').val() != '' && $('#hasta').val() != '') {
+        if(direccionesModulo.rutaActiva() && $('#desde').val() != '' && $('#hasta').val() != '') {
           direccionesModulo.calcularYMostrarRutas()
         }
       })
     }
+
+    $('#optimizarRuta').change(function() {
+      if($('#desde').val() != '' && $('#hasta').val() != '') {
+        direccionesModulo.calcularYMostrarRutas()
+      }
+    })
   }
 
-    // Agrega la dirección en las lista de Lugares Intermedios en caso de que no estén
-  function agregarDireccionEnLista (direccion, coord) {
-    var lugaresIntermedios = document.getElementById('puntosIntermedios')
+  // Agrega la dirección en las lista de Lugares Intermedios en caso de que no estén
+  // el parametro esPuntoIntermedio indica si se llamo la funcion desde el input#agregar
+  function agregarDireccionEnLista (direccion, coord, esPuntoIntermedio = false) {
+    let lugaresIntermedios = document.getElementById('puntosIntermedios')
+    let ubicacionTexto = coord.lat() + ',' + coord.lng()
 
-    var haceFaltaAgregar = true
+    let haceFaltaAgregar = true
     for (i = 0; i < lugaresIntermedios.length; ++i) {
       if (lugaresIntermedios.options[i].text.replace(/\r?\n|\r/g, ' ') === direccion.replace(/\r?\n|\r/g, ' ')) {
         haceFaltaAgregar = false
       }
     }
     if (haceFaltaAgregar) {
-      var opt = document.createElement('option')
-      opt.value = coord
+      let opt = document.createElement('option')
+      opt.value = ubicacionTexto
       opt.innerHTML = direccion
       lugaresIntermedios.appendChild(opt)
+      if (esPuntoIntermedio) {
+        opt.selected = true;
+        marcadorModulo.crearMarcadorLugarIntermedio(coord);
+      }
+    } else {
+      alert("El punto indicado ya fue marcado.")
     }
   }
 
-    // Agrega la dirección en las listas de puntos intermedios y lo muestra con el street view
-  function agregarDireccionYMostrarEnMapa (direccion, ubicacion) {
+  // Agrega la dirección en las listas de puntos intermedios y lo muestra con el street view
+  // Props: .direccion .ubicacion
+  function agregarDireccionYMostrarEnMapa (props) {
     that = this
-    var ubicacionTexto = ubicacion.lat() + ',' + ubicacion.lng()
-    agregarDireccionEnLista(direccion, ubicacionTexto)
-    mapa.setCenter(ubicacion)
-    streetViewModulo.fijarStreetView(ubicacion)
-    marcadorModulo.mostrarMiMarcador(ubicacion)
+    agregarDireccionEnLista(props.direccion, props.ubicacion)
+    mapa.setCenter(props.ubicacion)
+    streetViewModulo.fijarStreetView(props.ubicacion)
+    marcadorModulo.mostrarMiMarcador(props.ubicacion)
   }
 
-  function agregarDireccion (direccion, ubicacion) {
+  // Props: .direccion .ubicacion
+  function agregarDireccion (props) {
     that = this
-    var ubicacionTexto = ubicacion.lat() + ',' + ubicacion.lng()
-    agregarDireccionEnLista(direccion, ubicacionTexto)
-    mapa.panTo(ubicacion)
-
-    marcadorModulo.crearMarcadorLugarIntermedio(ubicacion);
+    agregarDireccionEnLista(props.direccion, props.ubicacion, true)
+    mapa.panTo(props.ubicacion)
+    if(direccionesModulo.rutaActiva()) {
+      direccionesModulo.calcularYMostrarRutas()
+    }  
   }
 
     // Inicializo las variables que muestra el panel y el que calcula las rutas//
@@ -67,21 +83,25 @@ direccionesModulo = (function () {
         // Agrega la direccion cuando se presioná enter en el campo agregar
     $('#agregar').keypress(function (e) {
       if (e.keyCode == 13) {
-        var direccion = document.getElementById('agregar').value
-        geocodificadorModulo.usaDireccion(direccion, direccionesModulo.agregarDireccion)
+        let props = {
+          direccion: document.getElementById('agregar').value
+        }
+        geocodificadorModulo.usaDireccionProps(props, direccionesModulo.agregarDireccion)
       }
     })
         // Calcula las rutas cuando se presioná enter en el campo desde y hay un valor disitnto a vacío en 'hasta'
     $('#desde').keypress(function (e) {
-      if (e.keyCode == 13 && document.getElementById('hasta').value != '') {
-        direccionesModulo.calcularYMostrarRutas()
+      if (e.keyCode == 13) {
+        geocodificadorModulo.usaDireccionProps({titulo: $('#desde').val(), direccion: $('#desde').val()}, marcadorModulo.mostrarMarcadorEstandar);
+        if (document.getElementById('hasta').value != '') direccionesModulo.calcularYMostrarRutas();
       }
     })
 
         // Calcula las rutas cuando se presioná enter en el campo hasta y hay un valor disitnto a vacío en 'desde'
     $('#hasta').keypress(function (e) {
-      if (e.keyCode == 13 && document.getElementById('desde').value != '') {
-        direccionesModulo.calcularYMostrarRutas()
+      if (e.keyCode == 13) {
+        geocodificadorModulo.usaDireccionProps({titulo: $('#hasta').val(), direccion: $('#hasta').val()}, marcadorModulo.mostrarMarcadorEstandar);
+        if (document.getElementById('desde').value != '') direccionesModulo.calcularYMostrarRutas();
       }
     })
     servicioDirecciones = new google.maps.DirectionsService()
@@ -96,15 +116,12 @@ direccionesModulo = (function () {
     // Calcula la ruta entre los puntos Desde y Hasta con los puntosIntermedios
     // dependiendo de la formaDeIr que puede ser Caminando, Auto o Bus/Subterraneo/Tren
   function calcularYMostrarRutas () {
-
-        /* Completar la función calcularYMostrarRutas , que dependiendo de la forma en que el
-         usuario quiere ir de un camino al otro, calcula la ruta entre esas dos posiciones
-         y luego muestra la ruta. */
     if($('#desde').val() != '' && $('#hasta').val() != '') {
       let puntosIntermedios = [];
       let intermediosCheckbox = document.getElementById('puntosIntermedios');
+      let optimizarRuta = $('#optimizarRuta').prop('checked');
   
-      for(var i = 0; i < intermediosCheckbox.length; i++) {
+      for(let i = 0; i < intermediosCheckbox.length; i++) {
         if(intermediosCheckbox[i].selected){
           puntosIntermedios.push({
             location: intermediosCheckbox[i].value,
@@ -118,10 +135,14 @@ direccionesModulo = (function () {
         destination: $('#hasta').val(),
         travelMode: getTravelMode(),
         waypoints: puntosIntermedios,
-        optimizeWaypoints: true
+        optimizeWaypoints: optimizarRuta,
       }, function(results, status){
         if(status == 'OK') {
           mostradorDirecciones.setDirections(results);
+          mostradorDirecciones.setMap(mapa);
+          mostradorDirecciones.setPanel(document.getElementById('directions-panel-summary'));
+          marcadorModulo.noMostrarMarcadores('todos');
+          mostrandoRuta = true;
         } else if (getTravelMode() == 'TRANSIT' && puntosIntermedios.length) {
           alert('No es posible calcular paradas intermedias en transporte público.');
         } else {
@@ -131,6 +152,18 @@ direccionesModulo = (function () {
     } else {
       alert('Debes indicar un origen y un destino.')
     }
+  }
+
+  function ocultarRutas() {
+    mostradorDirecciones.setMap(null);
+    mostradorDirecciones.setPanel(null);
+    marcadorModulo.mostrarMarcadores('ruta');
+    mostrandoRuta = false;
+  }
+
+  // Devuelve true si hay rutas dibujadas en el mapa
+  function rutaActiva() {
+    return mostrandoRuta;
   }
 
   function getTravelMode() {
@@ -147,6 +180,8 @@ direccionesModulo = (function () {
     agregarDireccion,
     agregarDireccionEnLista,
     agregarDireccionYMostrarEnMapa,
-    calcularYMostrarRutas
+    calcularYMostrarRutas,
+    ocultarRutas,
+    rutaActiva
   }
 }())

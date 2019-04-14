@@ -20,13 +20,14 @@ body {
     display: inline-block;
     font-weight: 300;
     font-style: italic;
+    margin-top: 10px;
 }
 
 .aclaracion span {
     margin-left: 5px;
 }
 
-select,
+select, 
 input {
     font-family: 'Roboto', sans-serif;
     padding: 0;
@@ -35,6 +36,21 @@ input {
     -moz-appearance: none;
     appearance: none;
     background: transparent;
+}
+
+input#optimizarRuta {
+    padding: auto;
+    border: #000;
+    -webkit-appearance: checkbox;
+    -moz-appearance: checkbox;
+    appearance: checkbox;
+}
+
+.aclaracion.check {
+    margin-bottom: 0;
+    margin-top: 12px;
+    font-weight: 500;
+    font-style: normal;
 }
 
 output {
@@ -307,6 +323,7 @@ label {
 #left-panel {
     float: left;
     text-align: left;
+    overflow: scroll;
     background: #d2e6e8;
     height: 100%;
     width: 320px;

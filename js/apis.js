@@ -5,10 +5,9 @@
 //Falta chequear cuando borrar marcadores del mapa. Ver marcador.js
 
 
-var mapa; // Mapa que vamos a modificar
+let mapa; 
 
-/* Crear la variable posicionCentral con las coordenadas donde se va a centrar el mapa */
-//default
+//ubicacion default
 let posicionCentral = {
   "lat" : -34.616653,
   "lng" : -58.441640
@@ -47,10 +46,6 @@ let miUbicacion = new Promise((resolve, reject) => {
 
 // Inicializa el mapa con un valor de zoom y una locación en el medio
 function inicializarMapa () {
-    /* Modificá la variable mapa con el constructor Map().
-    Tendrás que asignarle un valor de zoom y
-    un centro igual a la variable posicionCentral. */
-
   if(navigator.platform == 'MacIntel') $('#intermedios-container .aclaracion span').text('Cmd⌘ + Click') 
 
   mapa = new google.maps.Map(document.getElementById('map'),{
