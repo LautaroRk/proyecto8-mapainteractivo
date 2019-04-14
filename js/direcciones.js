@@ -53,7 +53,7 @@ direccionesModulo = (function () {
         marcadorModulo.crearMarcadorLugarIntermedio(coord);
       }
     } else {
-      alert("El punto indicado ya fue marcado.")
+      mapa.setCenter(coord);
     }
   }
 
@@ -148,13 +148,15 @@ direccionesModulo = (function () {
           mostrandoRuta = true;
           $('#expand-panel').removeClass('hidden');
         } else if (getTravelMode() == 'TRANSIT' && puntosIntermedios.length) {
-          alert('No es posible calcular paradas intermedias en transporte público.');
+          ocultarRutas();
+          swal("Error", "No es posible calcular paradas intermedias en transporte público", "error")
         } else {
-          alert('Error: ' + status);
+          ocultarRutas()
+          swal("Error", status, "error")
         }
       })
     } else {
-      alert('Debes indicar un origen y un destino.')
+      swal("Error", "Debes indicar un origen y un destino", "error")
     }
   }
 

@@ -35,7 +35,9 @@ lugaresModulo = (function () {
       if(status == 'OK') {
         marcadorModulo.marcarLugares(results, status);
       } else if(status == 'ZERO_RESULTS') {
-        alert('No se encontraron resultados para esta búsqueda.');
+        swal("Error", "No se encontraron resultados para esta búsqueda", "error")
+      } else {
+        swal("Error", status, "error")
       }
     })
   }

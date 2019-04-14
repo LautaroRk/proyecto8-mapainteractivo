@@ -51,6 +51,7 @@ marcadorModulo = (function () {
       title: 'Mi ubicación',
       animation: google.maps.Animation.BOUNCE
     })
+    marcadoresLugaresBuscados.push(miMarcador);
   }
   
   function crearMarcadorLugarIntermedio(ubicacion) {
@@ -115,6 +116,7 @@ marcadorModulo = (function () {
   function mostrarMarcadores (marcadores) {
     if (marcadores === 'ruta') {
       marcadoresEnMapa(marcadoresLugaresBuscados, mapa);
+      marcadoresLugaresBuscados[0].setAnimation(google.maps.Animation.BOUNCE);
       marcadoresEnMapa(marcadoresPuntosIntermedios, mapa);
     } else {
       marcadoresEnMapa(marcadores, mapa)

@@ -8,8 +8,10 @@ geocodificadorModulo = (function () {
       if (status == 'OK') {
         props.ubicacion = results[0].geometry.location;
         callback(props);
+      } else if(status == 'ZERO_RESULTS') {
+        swal("Error", "No se encontraron resultados para esta búsqueda", "error")
       } else {
-        alert('Geocode was not successful for the following reason: ' + status);
+        swal("Error", status, "error")
       }
     });
   }
@@ -20,7 +22,7 @@ geocodificadorModulo = (function () {
       if(status == 'OK' && results[0]) {
         callback(results[0].formatted_address);
       } else {
-        alert('Geocode was not successful for the following reason: ' + status);
+        swal("Error", status, "error")
       }
     })
 
