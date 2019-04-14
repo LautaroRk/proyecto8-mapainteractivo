@@ -12,6 +12,10 @@ body {
     color: #000;
 }
 
+.hidden {
+    display: none !important;
+}
+
 .aclaracion {
     line-height: 11px;
     min-width: 42px;
@@ -307,6 +311,7 @@ label {
 
 #map {
     height: 100%;
+    overflow: hidden;
 }
 
 #pano {
@@ -323,7 +328,7 @@ label {
 #left-panel {
     float: left;
     text-align: left;
-    overflow: scroll;
+    /* overflow: scroll; */
     background: #d2e6e8;
     height: 100%;
     width: 320px;
@@ -336,8 +341,23 @@ label {
 .directions {
     margin-top: 15px;
     overflow-y: scroll;
-    height: calc(100% - 478px);
+    /* height: calc(100% - 478px); */
+    height: calc(100% - 559px);
     font-size: 13px;
+}
+
+#expand-panel {
+    height:30px; 
+    width:30px; 
+    margin: -30px -15px; 
+    position:relative;
+    top:50%; 
+    left:50%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 100%;
+    cursor: pointer;
 }
 
 #directions-panel-summary .adp {

@@ -80,6 +80,9 @@ direccionesModulo = (function () {
     // Inicializo las variables que muestra el panel y el que calcula las rutas//
   function inicializar () {
     calcularRutasConClic()
+
+    $('#expand-panel').click(expandirPanelDirecciones);
+
         // Agrega la direccion cuando se presioná enter en el campo agregar
     $('#agregar').keypress(function (e) {
       if (e.keyCode == 13) {
@@ -93,7 +96,7 @@ direccionesModulo = (function () {
     $('#desde').keypress(function (e) {
       if (e.keyCode == 13) {
         geocodificadorModulo.usaDireccionProps({titulo: $('#desde').val(), direccion: $('#desde').val()}, marcadorModulo.mostrarMarcadorEstandar);
-        if (document.getElementById('hasta').value != '') direccionesModulo.calcularYMostrarRutas();
+        // if (document.getElementById('hasta').value != '') direccionesModulo.calcularYMostrarRutas();
       }
     })
 
@@ -101,7 +104,7 @@ direccionesModulo = (function () {
     $('#hasta').keypress(function (e) {
       if (e.keyCode == 13) {
         geocodificadorModulo.usaDireccionProps({titulo: $('#hasta').val(), direccion: $('#hasta').val()}, marcadorModulo.mostrarMarcadorEstandar);
-        if (document.getElementById('desde').value != '') direccionesModulo.calcularYMostrarRutas();
+        // if (document.getElementById('desde').value != '') direccionesModulo.calcularYMostrarRutas();
       }
     })
     servicioDirecciones = new google.maps.DirectionsService()
@@ -143,10 +146,11 @@ direccionesModulo = (function () {
           mostradorDirecciones.setPanel(document.getElementById('directions-panel-summary'));
           marcadorModulo.noMostrarMarcadores('todos');
           mostrandoRuta = true;
+          $('#expand-panel').removeClass('hidden');
         } else if (getTravelMode() == 'TRANSIT' && puntosIntermedios.length) {
           alert('No es posible calcular paradas intermedias en transporte público.');
         } else {
-          alert(status);
+          alert('Error: ' + status);
         }
       })
     } else {
@@ -154,11 +158,26 @@ direccionesModulo = (function () {
     }
   }
 
+  // Oculta las rutas y vuelve a mostrar los marcadores
   function ocultarRutas() {
     mostradorDirecciones.setMap(null);
     mostradorDirecciones.setPanel(null);
     marcadorModulo.mostrarMarcadores('ruta');
     mostrandoRuta = false;
+    contraerPanelDirecciones();
+    $('#expand-panel').addClass('hidden');
+  }
+
+  function expandirPanelDirecciones() {
+    $('.input-choose').css('display', 'none');
+    $('.directions').css('height', 'calc(100% - 171px)');
+    $('#expand-panel').click(contraerPanelDirecciones);
+  }
+
+  function contraerPanelDirecciones() {
+    $('.input-choose').css('display', 'block');
+    $('.directions').css('height', 'calc(100% - 559px)');
+    $('#expand-panel').click(expandirPanelDirecciones);
   }
 
   // Devuelve true si hay rutas dibujadas en el mapa

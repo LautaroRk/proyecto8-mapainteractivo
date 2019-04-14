@@ -61,7 +61,6 @@ geocodificadorModulo = (function () {
   }
 
   return {
-    usaDireccion,
     usaDireccionProps,
     inicializar,
     obtenerDireccionString
