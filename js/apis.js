@@ -1,9 +1,5 @@
-//pedir ayuda con la promise miUbicacion. 
-  //Esta bien declarada? Donde deberia ir? Tengo que hacer algo con el reject?  Una mejor forma de setear el default?
-//Que onda con el multiple checkbox que se puede iterar como array?
-//Falta evitar que se creen dos marcadores en el mismo lugar
-//Falta chequear cuando borrar marcadores del mapa. Ver marcador.js
-
+// Ver como mejorar las funciones callback y aplicar encadenamiento de promises en miUbicacion?
+// Como se retorna una promise en una funcion? Ver intento fallido en geocodificador.obtenerDireccionString
 
 let mapa; 
 
