@@ -1,17 +1,19 @@
 // Muestra y oculta el panorama de Street View cuando se hace clic el boton con id 'pano'
 function mostrarOcultarPano () {
-  var x = document.getElementById('pano')
+  let x = document.getElementById('pano')
   if (getComputedStyle(x, null).visibility === 'hidden') {
     x.style.visibility = 'visible'
+    $('#ocultarMostrarSV').html('Ocultar StreetView')
   } else {
     x.style.visibility = 'hidden'
+    $('#ocultarMostrarSV').html('Mostrar StreetView')
   }
 }
 
 // Mueve las opción para arriba para ordenar los puntos intermedios
 $(document).ready(function () {
   $('.up').click(function () {
-    var $op = $('#puntosIntermedios option:selected')
+    let $op = $('#puntosIntermedios option:selected')
     if ($op.length) {
       $op.first().prev().before($op)
     }
@@ -21,7 +23,7 @@ $(document).ready(function () {
 // Mueve la opción para abajo para ordenar los puntos intermedios
 $(document).ready(function () {
   $('.down').click(function () {
-    var $op = $('#puntosIntermedios option:selected')
+    let $op = $('#puntosIntermedios option:selected')
     if ($op.length) {
       $op.last().next().after($op)
     }
@@ -34,7 +36,7 @@ function mostrarValor (n) {
 }
 
 // los tipos de lugares de Google Maps
-var tiposDeLugares = [{
+let tiposDeLugares = [{
   value: 'accounting',
   text: 'Contabilidad'
 }, {

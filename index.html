@@ -72,7 +72,8 @@
                 <div></div>
             </div>
             <input type="submit" id="calcularMuchos" value="Calcular Ruta" class="btn btn-outline">
-            <button class="btn btn-outline hide-xs" onclick="mostrarOcultarPano()">Ocultar/Mostrar StreetView</button>
+            <input type="submit" id="ocultarRuta" value="Ocultar Ruta" class="btn btn-outline hidden">
+            <button id="ocultarMostrarSV" class="btn btn-outline hide-xs" onclick="mostrarOcultarPano()">Mostrar StreetView</button>
         </div>
         <div class="directions hide-xs">
             <button id="expand-panel" class="hidden">☰</button>
@@ -90,7 +91,7 @@
     <script src='js/lugares.js'></script>
     <script src='js/ayuda.js'></script>
     <script src='js/apis.js'></script>
-    <!-- Modificá "CLAVEAPI" por la clave que hayas obtenido -->
+
     <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDjlx4VlEOBNN4z8LllGolF-eY6IxjlfPE&libraries=places&callback=inicializarMapa" async defer></script>
 </body>
 

@@ -3,7 +3,7 @@ direccionesModulo = (function () {
   let mostradorDirecciones // Servicio muestra las direcciones
   let mostrandoRuta = false // Indica si hay rutas dibujadas en el mapa
 
-    // Calcula las rutas cuando se cambian los lugares de desde, hasta o algun punto intermedio
+  // Calcula las rutas cuando se cambian los lugares de desde, hasta o algun punto intermedio
   function calcularRutasConClic () {
     $('#comoIr').change(function () {
       if($('#desde').val() != '' && $('#hasta').val() != '') {
@@ -12,7 +12,11 @@ direccionesModulo = (function () {
     })
 
     $('#calcularMuchos').click(function () {
-      direccionesModulo.calcularYMostrarRutas()
+      direccionesModulo.calcularYMostrarRutas();
+    })
+
+    $('#ocultarRuta').click(function () {
+      direccionesModulo.ocultarRutas();
     })
 
     let listasLugares = $('.lugares')
@@ -145,6 +149,7 @@ direccionesModulo = (function () {
           mostradorDirecciones.setMap(mapa);
           mostradorDirecciones.setPanel(document.getElementById('directions-panel-summary'));
           marcadorModulo.noMostrarMarcadores('todos');
+          if (!mostrandoRuta) toggleBotonRuta();
           mostrandoRuta = true;
           $('#expand-panel').removeClass('hidden');
         } else if (getTravelMode() == 'TRANSIT' && puntosIntermedios.length) {
@@ -165,26 +170,36 @@ direccionesModulo = (function () {
     mostradorDirecciones.setMap(null);
     mostradorDirecciones.setPanel(null);
     marcadorModulo.mostrarMarcadores('ruta');
+    if (mostrandoRuta) toggleBotonRuta();
     mostrandoRuta = false;
     contraerPanelDirecciones();
     $('#expand-panel').addClass('hidden');
   }
 
   function expandirPanelDirecciones() {
-    $('.input-choose').css('display', 'none');
+    $('.input-choose').slideUp();
     $('.directions').css('height', 'calc(100% - 171px)');
+    $('#expand-panel').off('click');
     $('#expand-panel').click(contraerPanelDirecciones);
   }
 
   function contraerPanelDirecciones() {
-    $('.input-choose').css('display', 'block');
-    $('.directions').css('height', 'calc(100% - 559px)');
+    $('.input-choose').slideDown(function() {
+      $('.directions').css('height', 'calc(100% - 559px)');
+    });
+    $('#expand-panel').off('click');
     $('#expand-panel').click(expandirPanelDirecciones);
   }
 
   // Devuelve true si hay rutas dibujadas en el mapa
   function rutaActiva() {
     return mostrandoRuta;
+  }
+
+  // Alterna entre los botones Calcular Ruta y Ocultar Ruta
+  function toggleBotonRuta() {
+    $('#calcularMuchos').toggleClass('hidden');
+    $('#ocultarRuta').toggleClass('hidden');
   }
 
   function getTravelMode() {

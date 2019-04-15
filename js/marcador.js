@@ -17,6 +17,7 @@ marcadorModulo = (function () {
       title: $('#direccion').val()
     });
     clickDerechoMarcador(miMarcador);
+    clickMarcadorStreetView(miMarcador);
 
     let esPrimerMarcador = !marcadoresLugaresBuscados.length;
     let noEstaRepetido = esPrimerMarcador ? true : marcadoresLugaresBuscados.every(marcador => !marcadorModulo.sonIguales(marcador, miMarcador));
@@ -34,7 +35,9 @@ marcadorModulo = (function () {
       title: props.titulo
     });
     clickDerechoMarcador(marcador);
+    clickMarcadorStreetView(marcador);
 
+    streetViewModulo.fijarStreetView(props.ubicacion);
     mapa.panTo(props.ubicacion);
 
     let esPrimerMarcador = !marcadoresLugaresBuscados.length;
@@ -52,6 +55,8 @@ marcadorModulo = (function () {
       animation: google.maps.Animation.BOUNCE
     })
     marcadoresLugaresBuscados.push(miMarcador);
+    clickMarcadorStreetView(miMarcador);
+    streetViewModulo.fijarStreetView(ubicacion);
   }
   
   function crearMarcadorLugarIntermedio(ubicacion) {
@@ -64,6 +69,8 @@ marcadorModulo = (function () {
       visible: true
     })
     clickDerechoMarcador(marcador);
+    clickMarcadorStreetView(marcador);
+    streetViewModulo.fijarStreetView(ubicacion);
 
     marcadoresPuntosIntermedios.push(marcador);
 
@@ -83,6 +90,19 @@ marcadorModulo = (function () {
           lugaresIntermedios.options[i] = null;
         }
       }
+
+      //Se elimina el marcador del array correspondiente
+      let index = marcadoresPuntosIntermedios.indexOf(marcador);
+      if (index > -1) marcadoresPuntosIntermedios.splice(index, 1);
+      let index2 = marcadoresLugaresBuscados.indexOf(marcador);
+      if (index2 > -1) marcadoresLugaresBuscados.splice(index2, 1);
+    });
+  }
+
+  // Agrega event listener para mostrar el lugar en el street view al clickear un marcador
+  function clickMarcadorStreetView(marcador) {
+    google.maps.event.addListener(marcador, 'click', function () {
+      streetViewModulo.fijarStreetView(marcador.getPosition());
     });
   }
 
