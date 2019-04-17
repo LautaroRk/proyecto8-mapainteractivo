@@ -11,35 +11,77 @@ let posicionCentral = {
 
 // Si es posible obtener la ubicacion del usuario, se centra el mapa sobre ella, 
 // se agrega un marcador especial y se acerca el zoom
-let miUbicacion = new Promise((resolve, reject) => {
-  resolve(function(){
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(ubicacion){
+// let miUbicacion = new Promise((resolve, reject) => {
+//   resolve(function(){
+//     if(navigator.geolocation) {
+//       navigator.geolocation.getCurrentPosition(function(ubicacion){
 
-        posicionCentral = {
+//         posicionCentral = {
+//           "lat" : ubicacion.coords.latitude,
+//           "lng" : ubicacion.coords.longitude
+//         };
+        
+//         mapa.panTo(posicionCentral);
+//         mapa.setZoom(15);
+//         streetViewModulo.fijarStreetView(posicionCentral);
+//         marcadorModulo.mostrarMiUbicacion(posicionCentral);
+//         $('#desde').val('' + posicionCentral.lat + ',' + posicionCentral.lng);
+
+//         // Se reemplaza la ubicacion en coordenadas por un string legible
+//         new Promise((resolve, reject) => {
+//           resolve(function() {
+//             geocodificadorModulo.obtenerDireccionString(posicionCentral, function(direccion) {
+//               $('#desde').val(direccion);
+//             });
+//           });
+//         }).then(actualizarStringDireccion => actualizarStringDireccion());
+//       });
+//     }
+//   })
+// }).then(actualizarUbicacion => actualizarUbicacion());
+
+//  if(navigator.geolocation) {
+//       navigator.geolocation.getCurrentPosition(function(ubicacion){
+
+//         posicionCentral = {
+//           "lat" : ubicacion.coords.latitude,
+//           "lng" : ubicacion.coords.longitude
+//         };
+        
+//         mapa.panTo(posicionCentral);
+//         mapa.setZoom(15);
+//         streetViewModulo.fijarStreetView(posicionCentral);
+//         marcadorModulo.mostrarMiUbicacion(posicionCentral);
+//         $('#desde').val('' + posicionCentral.lat + ',' + posicionCentral.lng);
+//         geocodificadorModulo.obtenerDireccionString(posicionCentral, function(direccion) {
+//           $('#desde').val(direccion);
+//         });
+//       });
+//   }
+
+  function obtenerUbicacion(){
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(function(ubicacion){
+        let coordenadas = {
           "lat" : ubicacion.coords.latitude,
           "lng" : ubicacion.coords.longitude
         };
-        
-        mapa.panTo(posicionCentral);
-        mapa.setZoom(15);
-        streetViewModulo.fijarStreetView(posicionCentral);
-        marcadorModulo.mostrarMiUbicacion(posicionCentral);
-        $('#desde').val('' + posicionCentral.lat + ',' + posicionCentral.lng);
-
-        // Se reemplaza la ubicacion en coordenadas por un string legible
-        new Promise((resolve, reject) => {
-          resolve(function() {
-            geocodificadorModulo.obtenerDireccionString(posicionCentral, function(direccion) {
-              $('#desde').val(direccion);
-            });
-          });
-        }).then(actualizarStringDireccion => actualizarStringDireccion());
-      });
-    }
-  })
-}).then(actualizarUbicacion => actualizarUbicacion());
-
+        resolve(coordenadas)
+      })
+    })
+  }
+      
+  obtenerUbicacion().then(coordenadas => {
+    mapa.panTo(coordenadas);
+    mapa.setZoom(15);
+    streetViewModulo.fijarStreetView(coordenadas);
+    marcadorModulo.mostrarMiUbicacion(coordenadas);
+    // $('#desde').val('' + coordenadas.lat + ',' + coordenadas.lng);
+    geocodificadorModulo.obtenerDireccionString(coordenadas, function(direccion) {
+      $('#desde').val(direccion);
+    });
+  }).catch()
+  
 // Inicializa el mapa con un valor de zoom y una locación en el medio
 function inicializarMapa () {
   if(navigator.platform == 'MacIntel') $('#intermedios-container .aclaracion span').text('Cmd⌘ + Click') 
