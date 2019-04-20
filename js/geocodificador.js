@@ -16,6 +16,19 @@ geocodificadorModulo = (function () {
     });
   }
 
+  // Si es posible obtener la ubicacion del usuario, devuelve sus coordenadas en formato LatLng
+  function obtenerUbicacion(){
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(function(ubicacion){
+        let coordenadas = {
+          "lat" : ubicacion.coords.latitude,
+          "lng" : ubicacion.coords.longitude
+        };
+        resolve(coordenadas);
+      })
+    })
+  };
+
   // Recibe una coordenada y devuelve la direccion en string
   function obtenerDireccionString(LatLng, callback) {
     geocodificador.geocode({'location': LatLng}, function(results, status){
@@ -25,20 +38,6 @@ geocodificadorModulo = (function () {
         swal("Error", status, "error")
       }
     })
-
-    // INTENTO FALLIDO DE CREAR LA PROMESA DENTRO DE LA FUNCION
-
-    // new Promise((resolve) => {
-    //   resolve(function() {
-    //     geocodificador.geocode({'location': LatLng}, function(results, status){
-    //       if(status == 'OK' && results[0]) {
-    //         callback(results[0].formatted_address);
-    //       } else {
-    //         alert('Geocode was not successful for the following reason: ' + status);
-    //       }
-    //     });
-    //   });
-    // }).then(actualizarStringDireccion => actualizarStringDireccion());
   };
 
     // Inicializo el geocoder que obtiene las corrdenadas a partir de una dirección
@@ -65,6 +64,7 @@ geocodificadorModulo = (function () {
   return {
     usaDireccionProps,
     inicializar,
+    obtenerUbicacion,
     obtenerDireccionString
   }
 })()

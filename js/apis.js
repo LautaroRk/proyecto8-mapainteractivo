@@ -1,96 +1,31 @@
-// Ver como mejorar las funciones callback y aplicar encadenamiento de promises en miUbicacion?
-// Como se retorna una promise en una funcion? Ver intento fallido en geocodificador.obtenerDireccionString
-
 let mapa; 
-
-//ubicacion default
-let posicionCentral = {
-  "lat" : -34.616653,
-  "lng" : -58.441640
-};
-
-// Si es posible obtener la ubicacion del usuario, se centra el mapa sobre ella, 
-// se agrega un marcador especial y se acerca el zoom
-// let miUbicacion = new Promise((resolve, reject) => {
-//   resolve(function(){
-//     if(navigator.geolocation) {
-//       navigator.geolocation.getCurrentPosition(function(ubicacion){
-
-//         posicionCentral = {
-//           "lat" : ubicacion.coords.latitude,
-//           "lng" : ubicacion.coords.longitude
-//         };
-        
-//         mapa.panTo(posicionCentral);
-//         mapa.setZoom(15);
-//         streetViewModulo.fijarStreetView(posicionCentral);
-//         marcadorModulo.mostrarMiUbicacion(posicionCentral);
-//         $('#desde').val('' + posicionCentral.lat + ',' + posicionCentral.lng);
-
-//         // Se reemplaza la ubicacion en coordenadas por un string legible
-//         new Promise((resolve, reject) => {
-//           resolve(function() {
-//             geocodificadorModulo.obtenerDireccionString(posicionCentral, function(direccion) {
-//               $('#desde').val(direccion);
-//             });
-//           });
-//         }).then(actualizarStringDireccion => actualizarStringDireccion());
-//       });
-//     }
-//   })
-// }).then(actualizarUbicacion => actualizarUbicacion());
-
-//  if(navigator.geolocation) {
-//       navigator.geolocation.getCurrentPosition(function(ubicacion){
-
-//         posicionCentral = {
-//           "lat" : ubicacion.coords.latitude,
-//           "lng" : ubicacion.coords.longitude
-//         };
-        
-//         mapa.panTo(posicionCentral);
-//         mapa.setZoom(15);
-//         streetViewModulo.fijarStreetView(posicionCentral);
-//         marcadorModulo.mostrarMiUbicacion(posicionCentral);
-//         $('#desde').val('' + posicionCentral.lat + ',' + posicionCentral.lng);
-//         geocodificadorModulo.obtenerDireccionString(posicionCentral, function(direccion) {
-//           $('#desde').val(direccion);
-//         });
-//       });
-//   }
-
-  function obtenerUbicacion(){
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(function(ubicacion){
-        let coordenadas = {
-          "lat" : ubicacion.coords.latitude,
-          "lng" : ubicacion.coords.longitude
-        };
-        resolve(coordenadas)
-      })
-    })
-  }
-      
-  obtenerUbicacion().then(coordenadas => {
-    mapa.panTo(coordenadas);
-    mapa.setZoom(15);
-    streetViewModulo.fijarStreetView(coordenadas);
-    marcadorModulo.mostrarMiUbicacion(coordenadas);
-    // $('#desde').val('' + coordenadas.lat + ',' + coordenadas.lng);
-    geocodificadorModulo.obtenerDireccionString(coordenadas, function(direccion) {
-      $('#desde').val(direccion);
-    });
-  }).catch()
   
 // Inicializa el mapa con un valor de zoom y una locación en el medio
 function inicializarMapa () {
   if(navigator.platform == 'MacIntel') $('#intermedios-container .aclaracion span').text('Cmd⌘ + Click') 
 
+  // Ubicacion default (Caballito, centro geografico de Buenos Aires)
+  let posicionCentral = {
+    "lat" : -34.616653,
+    "lng" : -58.441640
+  };
+
   mapa = new google.maps.Map(document.getElementById('map'),{
     center: posicionCentral,
     zoom: 12,
     minZoom: 3
-  })
+  });
+
+  // Se obtiene la ubicacion del usuario y se coloca la formatted_address em el campo #desde
+  geocodificadorModulo.obtenerUbicacion().then(coordenadas => {
+    mapa.panTo(coordenadas);
+    mapa.setZoom(15);
+    streetViewModulo.fijarStreetView(coordenadas);
+    marcadorModulo.mostrarMiUbicacion(coordenadas);
+    geocodificadorModulo.obtenerDireccionString(coordenadas, function(direccion) {
+      $('#desde').val(direccion);
+    });
+  }).catch(/* error handler */)
 
   geocodificadorModulo.inicializar()
   marcadorModulo.inicializar()
